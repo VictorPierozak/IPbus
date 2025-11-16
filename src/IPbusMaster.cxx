@@ -13,7 +13,7 @@ IPbusMaster::IPbusMaster(boost::asio::io_context& ioContext, std::string address
                                                                                                                     m_remotePort(rport),
                                                                                                                     m_ipAddress(address),
                                                                                                                     m_localEndpoint(boost::asio::ip::udp::v4(), m_localPort),
-                                                                                                                    m_remoteEndpoint(boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(m_ipAddress), m_remotePort)),
+                                                                                                                    m_remoteEndpoint(boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(m_ipAddress), m_remotePort)),
                                                                                                                     m_socket(ioContext),
                                                                                                                     m_timer(ioContext)
 
@@ -59,7 +59,7 @@ size_t IPbusMaster::receive(char* destBuffer, size_t maxSize)
 
     m_socket.async_receive_from(boost::asio::buffer(destBuffer, maxSize), m_remoteEndpoint, boost::bind(&IPbusMaster::handleReceive, this, std::placeholders::_1, std::placeholders::_2));
 
-    m_timer.expires_from_now(m_timeout);
+    m_timer.expires_after(m_timeout);
     m_timer.async_wait(boost::bind(&IPbusMaster::handleDeadline, this));
 
     int counter = 0;
@@ -122,7 +122,7 @@ void IPbusMaster::handleDeadline()
     //m_socket.cancel();
   }
 
-  m_timer.expires_at(boost::posix_time::pos_infin);
+  m_timer.expires_at(std::chrono::steady_clock::time_point::max());
   //m_timer.async_wait(boost::bind(&IPbusMaster::handleDeadline, this));
 
   pthread_mutex_unlock(&m_receiveStatusMutex);
@@ -327,12 +327,12 @@ void IPbusMaster::intializeMutex(pthread_mutex_t& mutex)
   pthread_mutex_init(&mutex, NULL);
 }
 
-void IPbusMaster::setTimeout(boost::posix_time::milliseconds timeout)
+void IPbusMaster::setTimeout(std::chrono::milliseconds timeout)
 {
   m_timeout = timeout;
 }
 
-boost::posix_time::milliseconds IPbusMaster::getTimeout() const
+std::chrono::milliseconds IPbusMaster::getTimeout() const
 {
   return m_timeout;
 }
