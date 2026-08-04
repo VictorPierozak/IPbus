@@ -33,11 +33,10 @@ if(TEST)
     add_executable(flp_test test/flp_test.cpp)
     add_executable(slave_test test/slave_test.cpp)
 
-    # Link the test executable with the static library and Boost.System library
     target_include_directories(flp_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
-    target_link_libraries(flp_test ipbus Boost::system pthread dim)
+    target_link_libraries(flp_test ipbus pthread dim)
     target_include_directories(slave_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
-    target_link_libraries(slave_test ipbus Boost::system pthread dim)
+    target_link_libraries(slave_test ipbus pthread dim)
 endif()
 
 add_compile_options(-Wall -Wextra -Wpedantic)
