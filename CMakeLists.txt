@@ -16,14 +16,14 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 include(GNUInstallDirs)
 
 # Find Boost libraries
-find_package(Boost REQUIRED COMPONENTS system log)
+find_package(Boost REQUIRED COMPONENTS log)
 
 # Add the library
 add_library(ipbus STATIC src/IPbusMaster.cxx src/IPbusRequest.cxx src/IPbusResponse.cxx src/IPbusSlave.cxx)
 
 # Link Boost to the library
 target_include_directories(ipbus PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
-target_link_libraries(ipbus Boost::system Boost::log)
+target_link_libraries(ipbus Boost::log)
 
 # Add an option for TEST
 option(TEST "Compile the flp_test target" OFF)
@@ -33,11 +33,10 @@ if(TEST)
     add_executable(flp_test test/flp_test.cpp)
     add_executable(slave_test test/slave_test.cpp)
 
-    # Link the test executable with the static library and Boost.System library
     target_include_directories(flp_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
-    target_link_libraries(flp_test ipbus Boost::system pthread dim)
+    target_link_libraries(flp_test ipbus pthread dim)
     target_include_directories(slave_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
-    target_link_libraries(slave_test ipbus Boost::system pthread dim)
+    target_link_libraries(slave_test ipbus pthread dim)
 endif()
 
 add_compile_options(-Wall -Wextra -Wpedantic)

@@ -51,7 +51,7 @@ class IPbusMaster
 
   void handleReceive(const boost::system::error_code& ec, std::size_t length);
   void handleDeadline();
-  boost::asio::deadline_timer m_timer;
+  boost::asio::steady_timer m_timer;
 
   enum class ReceiveStatus{Wait, Expired, Received} m_receiveStatus;
   pthread_mutex_t m_receiveStatusMutex;
@@ -59,7 +59,7 @@ class IPbusMaster
   size_t m_receivedSize;
   boost::system::error_code m_error;
 
-  boost::posix_time::milliseconds m_timeout{2000};
+  std::chrono::milliseconds m_timeout{2000};
 
   pthread_mutex_t m_linkMutex;
   void intializeMutex(pthread_mutex_t& mutex);
@@ -78,8 +78,8 @@ class IPbusMaster
 
   bool isIPbusOK() { return m_isAvailable; }
 
-  void setTimeout(boost::posix_time::milliseconds timeout);
-  boost::posix_time::milliseconds getTimeout() const;
+  void setTimeout(std::chrono::milliseconds timeout);
+  std::chrono::milliseconds getTimeout() const;
 };
 
 } // namespace ipbus
