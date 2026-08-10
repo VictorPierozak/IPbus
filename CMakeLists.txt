@@ -1,10 +1,16 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
+
+if (POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW)
+endif ()
 
 # Project name and version
 project(IPbusProject VERSION 1.0 LANGUAGES CXX)
 
-# Set the C++ standard
-set(CMAKE_CXX_STANDARD 17)
+# Parent's standard must win: Boost.Asio changes layout at C++20, mixing standards is an ODR violation.
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+endif ()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
